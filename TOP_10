@@ -1,0 +1,13 @@
+a = LOAD 'covidd.csv' USING PigStorage(',') AS (iso_code: chararray, continent: chararray, location: chararray, date:datetime, total_cases:int, new_cases:int, total_deaths:int, new_cases:int);
+
+b = FILTER a BY date >= '2020-09-01';
+
+c = GROUP b BY location;
+
+d = FOREACH c GENERATE group, MAX(b.new_cases) AS Highest;
+
+e = ORDER d BY Highest desc;
+
+f = LIMIT e 10;
+
+DUMP f;
