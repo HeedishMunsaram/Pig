@@ -1,0 +1,13 @@
+a = LOAD 'covidd.csv' USING PigStorage(',') AS (iso_code: chararray, continent: chararray, location: chararray, date:chararray, total_cases:int, new_cases:int, total_deaths:int, new_cases:int);
+
+b = GROUP a ALL;
+
+c = FOREACH b GENERATE MAX(a.new_cases) AS Highest;
+
+d = FILTER a BY new_cases == (INT)c.Highest;
+
+e = GROUP d BY(date, location, new_cases);
+
+f = FOREACH e GENERATE FLATTEN(group);
+
+DUMP f
