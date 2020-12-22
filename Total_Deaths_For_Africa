@@ -1,0 +1,11 @@
+a = LOAD 'covidd.csv' USING PigStorage(',') AS (iso_code: chararray, continent: chararray, location: chararray, date:datetime, total_cases:int, new_cases:int, total_deaths:int, new_cases:int);
+
+--Populate all new deaths row and continent row
+b = FOREACH a GENERATE continent, new_deaths;
+--output all the column where continent equal to Africa
+c = FILTER b BY continent == 'Africa';
+--group continent
+d = GROUP c BY continent;
+--output the location and the sum of new deaths
+e = FOREACH d GENERATE group, SUM(filtering.new_deaths) AS totaldeaths;
+Dump e;
