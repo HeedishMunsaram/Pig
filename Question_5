@@ -1,0 +1,13 @@
+a = LOAD 'u.data' AS (userID:int, movieID:int, rating:int, time:chararray);
+b = LOAD 'u.item' USING PigStorage('|') AS (movieID:int, movieTitle:chararray);
+
+c = FILTER a by rating == 5;
+d = JOIN a BY movieID, b BY movieID;
+
+e = GROUP d BY (c::movieID, b::movieTitle);
+
+f = FOREACH e GENERATE group, COUNT(d.c::userID) AS num;
+
+describe f;
+g = ORDER f BY num;
+store g into 'pig/Movie';
